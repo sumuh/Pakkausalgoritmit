@@ -3,7 +3,16 @@
 ### Toteutettavat algoritmit ja tietorakenteet
 
 Tarkoituksena on toteuttaa tiedostoja tiivistävät pakkausalgoritmit sekä Huffmanin että Lempel-Ziv-Welchin algoritmilla. 
-Toteutettavia tietorakenteita ovat ainakin Huffmanin algoritmin käyttämä binääripuu ja LZW:n taulukko.
+
+Toteutettavia tietorakenteita ovat Huffman-koodin osalta ainakin:
+
+* Huffman-puu
+* PriorityQueue-rakenne
+* ArrayList tai muu vastaava listatoteutus
+
+Ja LZW:n osalta ainakin:
+
+* Taulukkorakenne
 
 ### Mitä ongelmaa ratkaiset ja miksi valitsit kyseiset algoritmit/tietorakenteet
 
@@ -13,6 +22,7 @@ Juuri LZW:n toteuttamiseen useista LZ-algoritmeistä päädyin myöskin siksi, e
 
 ### Mitä syötteitä ohjelma saa ja miten näitä käytetään
 
+Algoritmit saavat syötteenä tavuja, jotka tiivistetään. Luultavasti ohjelmaan tulee mahdollisuus syöttää ainakin tekstiä, joka sitten muutetaan tavumuotoon ja annetaan algoritmien käsiteltäväksi.  
 
 ### Tavoitteena olevat aika- ja tilavaativuudet
 
