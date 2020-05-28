@@ -5,6 +5,7 @@
  */
 package huffman;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -27,14 +28,22 @@ public class Main {
 //        input[3] = (byte) 0b00000001;
 
         Random random = new Random();
-        byte[] input = new byte[7];
+        byte[] input = new byte[10];
         for (int i = 0; i < input.length; i++) {
-            input[i] = (byte) random.nextInt(7);
-            System.out.println(input[i]);
+            input[i] = (byte) random.nextInt(10);
         }
-        //byte[] input = new byte[]{(byte) 2, (byte) 3, (byte) 4, (byte) 4, (byte) 1};
-        Compression c = new Compression(input);
-        PriorityQueue<SuperNode> pq = c.compress();
+        System.out.println("Input: ");
+        for (byte b : input) {
+            System.out.print(b + " ");
+        }
+        System.out.println("");
+        
+        byte[] input2 = new byte[]{6, 6, 2, 4, 3};
+        
+        Compression c = new Compression(input2);
+        File file = c.compress();
+        Decompression d = new Decompression();
+        d.decompress(file);
     }
     
 }

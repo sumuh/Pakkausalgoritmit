@@ -11,53 +11,124 @@ import java.util.Objects;
  *
  * @author Susanna Muhli
  */
-public class Node extends SuperNode {
+public class Node implements Comparable<Node> {
     
-    private SuperNode leftChild;
-    private SuperNode rightChild;
+    private Node leftChild;
+    private Node rightChild;
+    private int weight;
+    private ByteValue byteValue;
+    private boolean isLeaf;
     
     /**
      *
      * @param weight
-     * @param leftChild
-     * @param rightChild
+     * @param isLeaf
      */
-    public Node(int weight, SuperNode leftChild, SuperNode rightChild) {
-        super(weight);
-        this.leftChild = leftChild;
-        this.rightChild = rightChild;
-        this.isLeaf = false;
+    public Node(int weight, boolean isLeaf) {
+        this.weight = weight;
+        this.isLeaf = isLeaf;
     }
 
     /**
      *
      * @return vasemmalla alapuolella oleva node/lehti
      */
-    public SuperNode getLeftChild() {
+    public Node getLeftChild() {
         return leftChild;
+    }
+    
+    /**
+     * 
+     * @param node 
+     */
+    public void setLeftChild(Node node) {
+        this.leftChild = node;
     }
 
     /**
      *
      * @return oikealla alapuolella oleva node/lehti
      */
-    public SuperNode getRightChild() {
+    public Node getRightChild() {
         return rightChild;
     }
     
-    @Override
-    public String toString() {
-        return super.toString() + " (left child: " + this.leftChild.isLeaf + ") (right child: " + this.rightChild.isLeaf + ")";
+    /**
+     * 
+     * @param node 
+     */
+    public void setRightChild(Node node) {
+        this.rightChild = node;
     }
 
+    /**
+     * 
+     * @return paino
+     */
+    public int getWeight() {
+        return weight;
+    }
+
+    /**
+     * 
+     * @return noden sisältämä tavu jos node on lehti, muuten null
+     */
+    public byte getByteValue() {
+        return this.byteValue.getByteValue();
+    }
+    
+    /**
+     * 
+     * @param byteValue 
+     */
+    public void setByteValue(byte byteValue) {
+        this.byteValue = new ByteValue(byteValue);
+    }
+
+    /**
+     * 
+     * @return onko node lehti
+     */
+    public boolean getIsLeaf() {
+        return isLeaf;
+    }
+    
+    /**
+     * lisää noden painoa yhdellä
+     */
+    public void increaseWeight() {
+        this.weight++;
+    }
+    
+    /**
+     * 
+     * @return noden tiedot
+     */
+    @Override
+    public String toString() {
+        if (this.isLeaf) {
+            return "Leaf weight:" + this.weight + " byte:" + this.getByteValue();
+        }
+        return "Node weight:" + this.weight + " left child:" + this.leftChild.isLeaf + " right child:" + this.rightChild.isLeaf;
+    }
+
+    /**
+     * 
+     * @return hashcode
+     */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 13 * hash + Objects.hashCode(this.leftChild);
-        hash = 13 * hash + Objects.hashCode(this.rightChild);
+        int hash = 5;
+        hash = 97 * hash + this.weight;
+        hash = 97 * hash + (this.isLeaf ? 1 : 0);
         return hash;
     }
 
+    /**
+     * 
+     * @param obj
+     * @return equals
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -70,17 +141,46 @@ public class Node extends SuperNode {
             return false;
         }
         final Node other = (Node) obj;
+        if (this.weight != other.weight) {
+            return false;
+        }
+        if (this.byteValue != other.byteValue) {
+            return false;
+        }
+        if (this.isLeaf != other.isLeaf) {
+            return false;
+        }
         if (!Objects.equals(this.leftChild, other.leftChild)) {
             return false;
         }
         if (!Objects.equals(this.rightChild, other.rightChild)) {
             return false;
         }
-        if (this.weight != other.weight) {
-            return false;
-        }
         return true;
     }
+
+    /**
+     * 
+     * @param o
+     * @return vertailun tulos
+     */
+    @Override
+    public int compareTo(Node o) {
+        if (this.weight == o.weight) {
+            if (this.isLeaf && !o.isLeaf) {
+                return -1;
+            }
+            if (!this.isLeaf && o.isLeaf) {
+                return 1;
+            }
+            if (this.isLeaf && o.isLeaf) {
+                return this.getByteValue() - o.getByteValue();
+            }
+        }
+        return this.weight - o.weight;
+    }
+
+    
     
     
     
