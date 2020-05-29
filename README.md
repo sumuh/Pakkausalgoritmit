@@ -11,3 +11,5 @@ Tiralabra alkukesä 2020
 [Viikkoraportti 1](https://github.com/sumuh/Pakkausalgoritmit/blob/master/Dokumentaatio/Viikkoraportti1.md)
 
 [Viikkoraportti 2](https://github.com/sumuh/Pakkausalgoritmit/blob/master/Dokumentaatio/Viikkoraportti2.md)
+
+[Viikkoraportti 3](https://github.com/sumuh/Pakkausalgoritmit/blob/master/Dokumentaatio/Viikkoraportti3.md)
