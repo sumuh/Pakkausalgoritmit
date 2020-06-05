@@ -107,12 +107,12 @@ public class Table<K, V> implements Iterable<Entry> {
     
     public K getKey(V value) {
         Iterator it = this.iterator();
-            while (it.hasNext()) {
-                Entry e = (Entry) it.next();
-                if (e.getValue().equals(value)) {
-                    return (K) e.getKey();
-                }
+        while (it.hasNext()) {
+            Entry e = (Entry) it.next();
+            if (e.getValue().equals(value)) {
+                return (K) e.getKey();
             }
+        }
         return null;
     }
     

@@ -41,8 +41,8 @@ public class NodePriorityQueue {
                     Node t = nodes[i];
                     nodes[i] = node;
                     while (i < size - 1) {
-                        Node next = nodes[i+1];
-                        nodes[i+1] = t;
+                        Node next = nodes[i + 1];
+                        nodes[i + 1] = t;
                         t = next;
                         i++;
                     }
@@ -65,7 +65,7 @@ public class NodePriorityQueue {
         Node toReturn = nodes[0];
         Node t = nodes[0];
         for (int i = 1; i < size; i++) {
-            nodes[i-1] = nodes[i];
+            nodes[i - 1] = nodes[i];
         }
         size--;
         return toReturn;

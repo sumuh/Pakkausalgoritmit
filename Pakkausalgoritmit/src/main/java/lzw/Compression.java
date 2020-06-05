@@ -43,7 +43,7 @@ public class Compression {
         
         for (int i = 0; i < 256; i++) {
             String key = intTo12Bit(i);
-            dict.add(key, ""+(char) i);
+            dict.add(key, "" + (char) i);
         }
         
         int keyIndex = 256;
@@ -69,7 +69,7 @@ public class Compression {
                     bw.newLine();
                     dict.add(intTo12Bit(keyIndex), sc);
                     keyIndex++;
-                    s = ""+c;
+                    s = "" + c;
                 } else {
                     s = sc;
                 }
@@ -103,7 +103,7 @@ public class Compression {
             sb.append(0);
         }
         for (int j = zeroes; j < 12; j++) {
-            sb.append(s.charAt(j-zeroes));
+            sb.append(s.charAt(j - zeroes));
         }
         return sb.toString();
     }

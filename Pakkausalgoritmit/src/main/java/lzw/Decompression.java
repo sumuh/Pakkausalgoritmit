@@ -22,7 +22,7 @@ public class Decompression {
     private Table<String, String> dict;
     private File compressedFile;
     
-    public Decompression (File file) {
+    public Decompression(File file) {
         this.compressedFile = file;
         this.dict = new Table(4096);
     }
@@ -37,7 +37,7 @@ public class Decompression {
         
         for (int i = 0; i < 256; i++) {
             String key = intTo12Bit(i);
-            dict.add(key, ""+(char) i);
+            dict.add(key, "" + (char) i);
         }
         
         
@@ -103,7 +103,7 @@ public class Decompression {
             sb.append(0);
         }
         for (int j = zeroes; j < 12; j++) {
-            sb.append(s.charAt(j-zeroes));
+            sb.append(s.charAt(j - zeroes));
         }
         return sb.toString();
     }
