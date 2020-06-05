@@ -55,8 +55,11 @@ public class Compression {
         File retFile = new File("lzwfiles/compressed.bin");
         
         try {
+            //ongelmia tulee jos 2 ensimmäistä kirjainta samat
             FileWriter fw = new FileWriter(retFile);
             BufferedWriter bw = new BufferedWriter(fw);
+            
+            bw.flush();
             
             for (int i = 1; i < fileContent.length; i++) {
                 c = (char) fileContent[i];
@@ -74,10 +77,10 @@ public class Compression {
 
             bw.write(dict.getKey(s));
             
-            bw.flush();
-            bw.close();
             fw.flush();
+            bw.flush();
             fw.close();
+            bw.close();
             
         } catch (IOException e) {
             System.out.println(e.getMessage());

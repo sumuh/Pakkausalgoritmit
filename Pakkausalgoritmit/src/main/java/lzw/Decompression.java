@@ -57,11 +57,10 @@ public class Decompression {
             BufferedWriter bw = new BufferedWriter(fw);
             
             oldCode = br.readLine();
-            System.out.println(dict.get(oldCode));
             bw.write(dict.get(oldCode));
             
             while ((newCode = br.readLine()) != null) {
-                if (dict.get(newCode) == null) {
+                if (dict.getLzw(newCode) == null) {
                     s = dict.get(oldCode);
                     s = s + c;
                 } else {
@@ -76,10 +75,12 @@ public class Decompression {
                 oldCode = newCode;
             }
             
-            br.close();
-            bw.close();
+            fw.flush();
+            bw.flush();
             fr.close();
             fw.close();
+            br.close();
+            bw.close();
             
         } catch (IOException e) {
             System.out.println(e.getMessage());

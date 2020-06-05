@@ -66,11 +66,37 @@ public class Table<K, V> implements Iterable<Entry> {
         int hash = key.hashCode() % entries.length;
         hash = hash > 0 ? hash : -hash;
         Entry<K, V> entry = entries[hash];
-        if (entry.key==key) {
+        if (entry.key.equals(key)) {
             return entry.value;
         }
         while (entry.next != null) {
-            if (entry.next.key==key) {
+            if (entry.next.key.equals(key)) {
+                return entry.next.value;
+            } else {
+                entry = entry.next;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Versio get-metodista jossa palautetaan null myös jos avainta vastaavaa entryä ei ole vielä olemassa
+     * 
+     * @param key
+     * @return avainta vastaava arvo 
+     */
+    public V getLzw(K key) {
+        int hash = key.hashCode() % entries.length;
+        hash = hash > 0 ? hash : -hash;
+        Entry<K, V> entry = entries[hash];
+        if (entry == null) {
+            return null;
+        }
+        if (entry.key.equals(key)) {
+            return entry.value;
+        }
+        while (entry.next != null) {
+            if (entry.next.key.equals(key)) {
                 return entry.next.value;
             } else {
                 entry = entry.next;

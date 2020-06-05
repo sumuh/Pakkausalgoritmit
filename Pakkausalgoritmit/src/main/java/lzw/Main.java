@@ -25,12 +25,12 @@ public class Main {
         try {
             FileWriter fw = new FileWriter(txt);
             for (int i = 0; i < 1000; i++) {
-                fw.write("uuui");
+                fw.write("jksfd");
             }
             fw.flush();
             fw.close();
         } catch (IOException e) {
-            
+            System.out.println(e.getMessage());
         }
         
         Compression c = new Compression(txt);
