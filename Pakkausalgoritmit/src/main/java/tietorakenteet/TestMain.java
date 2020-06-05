@@ -5,6 +5,8 @@
  */
 package tietorakenteet;
 
+import huffman.Node;
+
 /**
  *
  * @author Susanna Muhli
@@ -16,13 +18,20 @@ public class TestMain {
      */
     public static void main(String[] args) {
         
-        Table<Integer, String> t = new Table<>(5);
-        t.add(1, "one");
-        t.add(1, "oneTwo");
-        t.add(3, "three");
-        t.add(13, "threeHash");
-        System.out.println(t.get(13));
-        
+        NodePriorityQueue pq = new NodePriorityQueue();
+        Node node1 = new Node(1, true);
+        Node node2 = new Node(2, true);
+        Node node3 = new Node(3, true);
+        Node node4 = new Node(4, true);
+        pq.offer(node2);
+        pq.offer(node4);
+        pq.offer(node3);
+        pq.offer(node1);
+        System.out.println(pq);
+        pq.poll();
+        pq.poll();
+        pq.poll();
+        System.out.println(pq);
     }
     
 }

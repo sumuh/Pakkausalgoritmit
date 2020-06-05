@@ -30,7 +30,7 @@ public class OrderedList<E> implements Iterable<E> {
      * @param e 
      */
     public void add(E e) {
-        if (size == list.length - 1) {
+        if (size == list.length) {
             doubleSize();
         }
         list[size] = e;

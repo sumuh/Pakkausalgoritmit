@@ -6,9 +6,10 @@
 package huffman;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Random;
 
 /**
@@ -27,23 +28,29 @@ public class Main {
 //        input[2] = (byte) 0b00000111;
 //        input[3] = (byte) 0b00000001;
 
-        Random random = new Random();
-        byte[] input = new byte[10];
-        for (int i = 0; i < input.length; i++) {
-            input[i] = (byte) random.nextInt(10);
+//        Random random = new Random();
+//        byte[] input = new byte[10000];
+//        for (int i = 0; i < input.length; i++) {
+//            input[i] = (byte) random.nextInt(10);
+//        }
+//        byte[] input2 = new byte[]{6, 6, 2, 4, 3};
+//        
+        File txt = new File("huffmanfiles/textfile.txt");
+        try {
+            FileWriter fw = new FileWriter(txt);
+            Random rand = new Random();
+            for (int i = 0; i < 100000; i++) {
+                fw.write("kl");
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println("Input: ");
-        for (byte b : input) {
-            System.out.print(b + " ");
-        }
-        System.out.println("");
         
-        byte[] input2 = new byte[]{6, 6, 2, 4, 3};
-        
-        Compression c = new Compression(input2);
-        File file = c.compress();
-        Decompression d = new Decompression();
-        d.decompress(file);
+        Compression c = new Compression(txt);
+        File compressed = c.compress();
+        Decompression d = new Decompression(compressed, ".txt");
+        File decompressed = d.decompress();
     }
     
 }

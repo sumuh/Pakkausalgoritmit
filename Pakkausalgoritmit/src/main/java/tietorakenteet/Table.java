@@ -14,7 +14,7 @@ import java.util.Iterator;
  * @param <K>
  * @param <V>
  */
-public class Table<K, V> {
+public class Table<K, V> implements Iterable<Entry> {
     
     private Entry<K, V>[] entries;
     private int size;
@@ -64,17 +64,29 @@ public class Table<K, V> {
      */
     public V get(K key) {
         int hash = key.hashCode() % entries.length;
+        hash = hash > 0 ? hash : -hash;
         Entry<K, V> entry = entries[hash];
-        if (entry.key == key) {
+        if (entry.key==key) {
             return entry.value;
         }
         while (entry.next != null) {
-            if (entry.next.key == key) {
+            if (entry.next.key==key) {
                 return entry.next.value;
             } else {
                 entry = entry.next;
             }
         }
+        return null;
+    }
+    
+    public K getKey(V value) {
+        Iterator it = this.iterator();
+            while (it.hasNext()) {
+                Entry e = (Entry) it.next();
+                if (e.getValue().equals(value)) {
+                    return (K) e.getKey();
+                }
+            }
         return null;
     }
     
@@ -96,9 +108,9 @@ public class Table<K, V> {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i] != null) {
                 Entry<K, V> entry = entries[i];
-                s += entry + "\n";
+                s += entry;
                 while (entry.next != null) {
-                    s += entry.next + "\n";
+                    s += entry.next;
                     entry = entry.next;
                 }
             }
@@ -106,4 +118,52 @@ public class Table<K, V> {
         return s;
     }
     
+    public Table reverseTable() {
+        Table reverse = new Table(this.getSize());
+        for (Entry e : this) {
+            reverse.add((K) e.value, (V) e.key);
+        }
+        return reverse;
+    }
+    
+    /**
+     * 
+     * @return iterator forEach-metodia jne. varten
+     */
+    @Override
+    public Iterator<Entry> iterator() {
+        Iterator<Entry> listIterator = new Iterator<Entry>() {
+
+            private int index = 0;
+            private int remaining = getSize();
+            private Entry next;
+
+            @Override
+            public boolean hasNext() {
+                if (remaining > 0) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Entry next() {
+                Entry e = next;
+                while (e == null) {
+                    e = entries[index++];
+                }
+                next = e.next;
+                remaining--;
+                return e;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+        return listIterator;
+    }
+    
 }
+ 

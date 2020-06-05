@@ -75,7 +75,7 @@ public class EntryTest {
      */
     @Test
     public void testToString() {
-        String expResult = "Key: 1, value: aaa";
+        String expResult = "Key: 1, value: aaa\n";
         assertEquals(expResult, entry1.toString());
     }
     

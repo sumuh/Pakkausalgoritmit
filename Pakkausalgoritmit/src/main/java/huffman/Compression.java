@@ -8,10 +8,10 @@ package huffman;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.PriorityQueue;
-import java.util.Map;
 import tietorakenteet.*;
 
 /**
@@ -23,13 +23,14 @@ public class Compression {
     private byte[] input;
     private Node root;
     private String treeString;
+    private File inputFile;
     
     /**
      *
-     * @param input
+     * @param inputFile
      */
-    public Compression(byte[] input) {
-        this.input = input;
+    public Compression(File inputFile) {
+        this.inputFile = inputFile;
         this.treeString = "";
     }
     
@@ -39,31 +40,49 @@ public class Compression {
      */
     public File compress() {
         
+        try {
+            input = Files.readAllBytes(inputFile.toPath());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        
         OrderedList<Node> initialNodes = this.initialOrder();
         root = initialNodes.get(0);
         
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        HashMap<Byte, String> table = new HashMap<>();
+        NodePriorityQueue pq = new NodePriorityQueue();
+        Table<Byte, String> table = new Table(initialNodes.length());
 
         for (Node node : initialNodes) {
             pq.offer(node);
         }
         
+        System.out.println("-Compression-");
+        
+        System.out.println("buildTree:");
+        
         buildTree(pq);
         
+        System.out.println("..done");
+        
+        System.out.println("buildTable:");
+        
         buildTable(table, root, 2, "");
-        System.out.println(printTable(table));
+        
+        System.out.println("..done");
+        
+        System.out.println("compressToString:");
         
         String compressedData = compressToString(table);
         
-        System.out.println("--Compression--");
+        System.out.println("..done");
+        
+        System.out.println("treeToString:");
         
         this.treeToString(root);
         
-        System.out.println("Tree string: " + treeString);
-        System.out.println("Compressed data: " + compressedData);
+        System.out.println("..done");
         
-        File file = new File("compressed.bin");
+        File file = new File("huffmanfiles/compressed.bin");
         writeToFile(file, compressedData);
         
         return file;
@@ -74,16 +93,11 @@ public class Compression {
      * @param table
      * @return input-data tiivistettynä stringiin huffman-tablen mukaan
      */
-    public String compressToString(HashMap<Byte, String> table) {
+    public String compressToString(Table<Byte, String> table) {
+        
         String compressedData = "";
         for (byte b : input) {
-            Iterator it = table.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                if (pair.getKey().equals(b)) {
-                    compressedData += pair.getValue();
-                }
-            }
+            compressedData += table.get(b);
         }
         return compressedData;
     }
@@ -100,10 +114,13 @@ public class Compression {
             out = new FileOutputStream(file);
             
             // kirjoita otsakkeet tiedostoon
-            out.write(treeString.length());
-            System.out.println("treestring.length " + treeString.length());
-            out.write(compressedData.length());
-            System.out.println("compressedData.length " + compressedData.length());
+            byte[] bytes = ByteBuffer.allocate(10).putInt(input.length).array();
+            out.write(bytes);
+            byte[] bytes2 = ByteBuffer.allocate(10).putInt(compressedData.length()).array();
+            out.write(bytes2);
+            byte[] bytes3 = ByteBuffer.allocate(10).putInt(treeString.length()).array();
+            out.write(bytes3);
+            
             
             // kirjoita data tiedostoon
             formatAndWriteDataToFile(out, treeString);
@@ -164,8 +181,8 @@ public class Compression {
      * 
      * @param pq
      */
-    public void buildTree(PriorityQueue<Node> pq) {
-        while (pq.size() > 1) {
+    public void buildTree(NodePriorityQueue pq) {
+        while (pq.getSize() > 1) {
             Node node1 = pq.poll();
             Node node2 = pq.poll();
             
@@ -187,7 +204,8 @@ public class Compression {
     public void treeToString(Node node) {
         if (node.getIsLeaf()) {
             treeString += "1";
-            String s1 = String.format("%8s", Integer.toBinaryString(node.getByteValue() & 0xFF)).replace(' ', '0');
+            //String s1 = String.format("%8s", Integer.toBinaryString(node.getByteValue() & 0xFF)).replace(' ', '0');
+            String s1 = Integer.toBinaryString((node.getByteValue() & 0xFF) + 0x100).substring(1);
             
             treeString += s1;
             return;
@@ -205,7 +223,7 @@ public class Compression {
      * @param lastEdge
      * @param current 
      */
-    public void buildTable(Map<Byte, String> table, Node node, int lastEdge, String current) {
+    public void buildTable(Table<Byte, String> table, Node node, int lastEdge, String current) {
         if (node == null) {
             return;
         }
@@ -213,7 +231,7 @@ public class Compression {
             current += lastEdge;
         }
         if (node.getIsLeaf()) {
-            table.put(node.getByteValue(), current);
+            table.add(node.getByteValue(), current);
             current = "";
         } else {
             buildTable(table, node.getLeftChild(), 0, current);
@@ -227,13 +245,11 @@ public class Compression {
      * @param table 
      * @return s
      */
-    public String printTable(Map<Byte, String> table) {
+    public String printTable(Table<Byte, String> table) {
         String s = "";
         s += "Huffman table:\n";
-        Iterator it = table.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            s += pair.getKey() + ": " + pair.getValue() + "\n";
+        for (Entry e : table) {
+            s += e.toString();
         }
         return s;
     }

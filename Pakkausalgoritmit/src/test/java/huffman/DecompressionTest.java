@@ -7,7 +7,10 @@ package huffman;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,7 +27,6 @@ public class DecompressionTest {
     private Compression c;
     private Decompression d;
     private File file;
-    private FileInputStream in;
     
     public DecompressionTest() {
     }
@@ -40,14 +42,19 @@ public class DecompressionTest {
     @Before
     public void setUp() {
         byte[] input = new byte[]{6, 6, 2, 4, 3};
-        this.c = new Compression(input);
-        this.d = new Decompression();
-        file = c.compress();
+        File inputFile = new File("huffmanfiles/toCompress.bin");
+        FileOutputStream out = null;
         try {
-            in = new FileInputStream(file);
+            out = new FileOutputStream(inputFile);
+            out.write(input);
+            out.close();
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
+        
+        c = new Compression(inputFile);
+        file = c.compress();
+        this.d = new Decompression(file, ".bin");
     }
     
     @After
@@ -59,6 +66,18 @@ public class DecompressionTest {
      */
     @Test
     public void testDecompress() {
+        File decompressed = d.decompress();
+        
+        try {
+            byte[] fileContent = Files.readAllBytes(decompressed.toPath());
+            assertEquals(fileContent[0], 6);
+            assertEquals(fileContent[1], 6);
+            assertEquals(fileContent[2], 2);
+            assertEquals(fileContent[3], 4);
+            assertEquals(fileContent[4], 3);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
         
     }
 
@@ -67,7 +86,6 @@ public class DecompressionTest {
      */
     @Test
     public void testReadFile() {
-        d.readFile(file);
     }
 
     /**
@@ -75,21 +93,7 @@ public class DecompressionTest {
      */
     @Test
     public void testFormatData() {
-        try {
-            in.read();
-            in.read();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
         
-        String expResult1 = "001000000101000000110100000100100000110";
-        String expResult2 = "1111001001";
-        
-        String s1 = d.formatData(in, 39);
-        String s2 = d.formatData(in, 10);
-        
-        assertEquals(expResult1, s1);
-        assertEquals(expResult2, s2);
     }
 
     /**
