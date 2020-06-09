@@ -6,6 +6,7 @@
 package tietorakenteet;
 
 import huffman.Node;
+import java.util.Random;
 
 /**
  *
@@ -18,20 +19,15 @@ public class TestMain {
      */
     public static void main(String[] args) {
         
-        NodePriorityQueue pq = new NodePriorityQueue();
-        Node node1 = new Node(1, true);
-        Node node2 = new Node(2, true);
-        Node node3 = new Node(3, true);
-        Node node4 = new Node(4, true);
-        pq.offer(node2);
-        pq.offer(node4);
-        pq.offer(node3);
-        pq.offer(node1);
-        System.out.println(pq);
-        pq.poll();
-        pq.poll();
-        pq.poll();
-        System.out.println(pq);
+        NodePriorityQueue pq = new NodePriorityQueue(10);
+        pq.offer(new Node(30, true));
+        pq.offer(new Node(12, true));
+        pq.offer(new Node(3, true));
+        pq.offer(new Node(5, true));
+        pq.offer(new Node(22, true));
+        while (!pq.isEmpty()) {
+            System.out.println(pq.poll().getWeight());
+        }
     }
     
 }

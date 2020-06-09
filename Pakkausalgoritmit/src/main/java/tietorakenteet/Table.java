@@ -18,10 +18,14 @@ public class Table<K, V> implements Iterable<Entry> {
     
     private Entry<K, V>[] entries;
     private int size;
+    private double loadFactor;
+    private int capacity;
     
-    public Table(int capacity) {
-        entries = new Entry[capacity];
+    public Table(int initialCapacity) {
+        this.capacity = initialCapacity;
+        this.entries = new Entry[capacity];
         this.size = 0;
+        this.loadFactor = 0.75;
     }
     
     /**
@@ -32,13 +36,9 @@ public class Table<K, V> implements Iterable<Entry> {
      */
     public void add(K key, V value) {
         Entry<K, V> entry = new Entry(key, value);
-        int hash = key.hashCode();
-        int index = hash % entries.length;
-        index = index > 0 ? index : -index;
-        
-        Entry<K, V> entryAtIndex = entries[index];
+        Entry<K, V> entryAtIndex = entries[hash(key)];
         if (entryAtIndex == null) {
-            entries[index] = entry;
+            entries[hash(key)] = entry;
             size++;
         } else {
             while (true) {
@@ -54,8 +54,13 @@ public class Table<K, V> implements Iterable<Entry> {
                 entryAtIndex = entryAtIndex.next;
             }
         }
+        
+        // kasvata kokoa tarvittaessa
+        if ((double) this.size / (double) this.capacity > loadFactor) {
+            resize();
+        }
+        
     }
-    
     
     /**
      * 
@@ -63,12 +68,11 @@ public class Table<K, V> implements Iterable<Entry> {
      * @return avainta vastaava arvo 
      */
     public V get(K key) {
-        int hash = key.hashCode() % entries.length;
-        hash = hash > 0 ? hash : -hash;
-        Entry<K, V> entry = entries[hash];
+        Entry<K, V> entry = entries[hash(key)];
         if (entry.key.equals(key)) {
             return entry.value;
         }
+        
         while (entry.next != null) {
             if (entry.next.key.equals(key)) {
                 return entry.next.value;
@@ -86,9 +90,7 @@ public class Table<K, V> implements Iterable<Entry> {
      * @return avainta vastaava arvo 
      */
     public V getLzw(K key) {
-        int hash = key.hashCode() % entries.length;
-        hash = hash > 0 ? hash : -hash;
-        Entry<K, V> entry = entries[hash];
+        Entry<K, V> entry = entries[hash(key)];
         if (entry == null) {
             return null;
         }
@@ -105,6 +107,11 @@ public class Table<K, V> implements Iterable<Entry> {
         return null;
     }
     
+    /**
+     * 
+     * @param value avaimen arvo
+     * @return avain
+     */
     public K getKey(V value) {
         Iterator it = this.iterator();
         while (it.hasNext()) {
@@ -114,6 +121,57 @@ public class Table<K, V> implements Iterable<Entry> {
             }
         }
         return null;
+    }
+    
+    /**
+     * 
+     * @param key
+     * @return hash-arvo avaimelle
+     */
+    public int hash(K key) {
+        int hash = key.hashCode() % capacity;
+        hash = hash > 0 ? hash : -hash;
+        return hash;
+    }
+    
+    /**
+     * 
+     * tuplaa tablen koon
+     */
+    public void resize() {
+        int newCapacity = this.capacity * 2;
+        Entry[] newEntries = new Entry[newCapacity];
+        
+        for (Entry e : this) {
+            
+            K key = (K) e.key;
+            V value = (V) e.value;
+            Entry<K, V> entry = new Entry(key, value);
+            int hash = key.hashCode();
+            int index = hash % newCapacity;
+            index = index > 0 ? index : -index;
+
+            Entry<K, V> entryAtIndex = newEntries[index];
+            if (entryAtIndex == null) {
+                newEntries[index] = entry;
+            } else {
+                while (true) {
+                    if (key == entryAtIndex.key) {
+                        entryAtIndex.value = value;
+                        break;
+                    }
+                    if (entryAtIndex.next == null) {
+                        entryAtIndex.next = entry;
+                        break;
+                    }
+                    entryAtIndex = entryAtIndex.next;
+                }
+            }
+        }
+        
+        this.capacity = newCapacity;
+        this.entries = newEntries;
+        
     }
     
     /**
@@ -142,14 +200,6 @@ public class Table<K, V> implements Iterable<Entry> {
             }
         }
         return s;
-    }
-    
-    public Table reverseTable() {
-        Table reverse = new Table(this.getSize());
-        for (Entry e : this) {
-            reverse.add((K) e.value, (V) e.key);
-        }
-        return reverse;
     }
     
     /**

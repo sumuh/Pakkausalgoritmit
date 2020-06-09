@@ -8,96 +8,127 @@ package tietorakenteet;
 import huffman.Node;
 
 /**
- * PriorityQueuea vastaava tietorakenne. Hyväksyy pelkkiä nodeja.
+ * PriorityQueuea vastaava tietorakenne. Hyväksyy pelkkiä nodeja. Toteutettu tehokkuussyistä min heapin avulla.
  * 
  * @author Susanna Muhli
  */
 public class NodePriorityQueue {
     
-    private Node[] nodes;
+    private int capacity;
     private int size;
+    private Node[] nodes;
     
-    public NodePriorityQueue() {
-        this.nodes = new Node[10];
+    public NodePriorityQueue(int capacity) {
+        this.capacity = capacity;
         this.size = 0;
-    }
-    
-    /**
-     * Vertaa uutta nodea olemassa oleviin nodeihin ja sijoittaa jonoon prioriteetin mukaan
-     * @param node 
-     */
-    public void offer(Node node) {
-        if (size == nodes.length) {
-            doubleSize();
-        }
-        
-        if (size == 0) {
-            nodes[0] = node;
-        } else {
-            boolean inserted = false;
-            for (int i = 0; i < size; i++) {
-                if (node.compareTo(nodes[i]) < 0) {
-                    inserted = true;
-                    Node t = nodes[i];
-                    nodes[i] = node;
-                    while (i < size - 1) {
-                        Node next = nodes[i + 1];
-                        nodes[i + 1] = t;
-                        t = next;
-                        i++;
-                    }
-                    nodes[size] = t;
-                    break;
-                }
-            }
-            if (!inserted) {
-                nodes[size] = node;
-            }
-        }
-        size++;
+        this.nodes = new Node[capacity + 1];
     }
     
     /**
      * 
-     * @return jonon ensimmäinen node 
+     * @param node lisättävä node
      */
-    public Node poll() {
-        Node toReturn = nodes[0];
-        Node t = nodes[0];
-        for (int i = 1; i < size; i++) {
-            nodes[i - 1] = nodes[i];
+    public void offer(Node node) {
+        size++;
+        nodes[size] = node;
+        int current = size;
+        
+        while (current > 1 && nodes[current].compareTo(nodes[current / 2]) < 0) {
+            swap(current, current / 2);
+            current = current / 2;
         }
-        size--;
-        return toReturn;
     }
     
     /**
-     * tuplaa listan koon
+     * 
+     * @return jonon ensimmäinen eli prioriteetiltaan korkein node
      */
-    public void doubleSize() {
-        Node[] newList = new Node[nodes.length * 2];
-        for (int i = 0; i < nodes.length; i++) {
-            newList[i] = nodes[i];
-        }
-        nodes = newList;
+    public Node poll() {
+        Node ret = nodes[1];
+        nodes[1] = nodes[size];
+        nodes[size] = null;
+        size--;
+        heapifyDown();
+        return ret;
     }
     
+    /**
+     * kun poistetaan juurinode, siirretään tällä metodilla nodet paikoilleen
+     */
+    public void heapifyDown() {
+        int current = 1;
+        
+        while (hasLeftChild(current)) {
+            int leftChild = 2 * current;
+            int smaller = leftChild;
+            if (hasRightChild(current)) {
+                int rightChild = 2 * current + 1;
+                if (nodes[leftChild].compareTo(nodes[rightChild]) > 0) {
+                    smaller = rightChild;
+                }
+            }
+            if (nodes[current].compareTo(nodes[smaller]) > 0) {
+                swap(current, smaller);
+                current = smaller;
+            } else {
+                break;
+            }
+        }
+        
+    }
+    
+    /**
+     * vaihtaa parameteinä annettujen nodejen paikkoja
+     * @param i
+     * @param j 
+     */
+    public void swap(int i, int j) {
+        Node temp = nodes[i];
+        nodes[i] = nodes[j];
+        nodes[j] = temp;
+    }
+    
+    /**
+     * 
+     * @return onko jono tyhjä
+     */
+    public boolean isEmpty() {
+        return this.size == 0;
+    }
+    
+    /**
+     * 
+     * @return jonon koko
+     */
     public int getSize() {
         return this.size;
     }
     
     /**
      * 
-     * @return jonon nodejen painot
+     * @param i
+     * @return onko parametrina annetun indeksin nodella vasenta lasta
      */
-    @Override
-    public String toString() {
-        String s = "[";
-        for (int i = 0; i < size; i++) {
-            s += nodes[i].getWeight() + " ";
-        }
-        s += "]";
-        return s;
+    public boolean hasLeftChild(int i) {
+        return i * 2 <= size;
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return  onko parametrina annetun indeksin nodella oikeaa lasta
+     */
+    public boolean hasRightChild(int i) {
+        return i * 2 + 1 <= size;
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return onko parametrina annetun indeksin nodella ylempää nodea
+     */
+    public boolean hasParent(int i) {
+        return i > 1;
     }
     
 }

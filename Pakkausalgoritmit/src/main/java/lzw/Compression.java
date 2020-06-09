@@ -24,7 +24,7 @@ public class Compression {
     
     public Compression(File file) {
         this.file = file;
-        this.dict = new Table(4096);
+        this.dict = new Table(10);
     }
     
     /**
@@ -55,7 +55,6 @@ public class Compression {
         File retFile = new File("lzwfiles/compressed.bin");
         
         try {
-            //ongelmia tulee jos 2 ensimmäistä kirjainta samat
             FileWriter fw = new FileWriter(retFile);
             BufferedWriter bw = new BufferedWriter(fw);
             

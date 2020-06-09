@@ -38,38 +38,20 @@ public class Decompression {
      */
     public File decompress() {
         
-        System.out.println("-Decompression-");
-        
-        System.out.println("readFile:");
-        
         readFile(file);
-        
-        System.out.println("..done");
         
         chars = treeString.toCharArray();
         index = 0;
         
         Node root = new Node(1, false);
         
-        System.out.println("buildTree:");
-        
         root = buildTree();
         
-        System.out.println("..done");
-        
-        Table<Byte, String> table = new Table(20);
-        
-        System.out.println("buildTable:");
+        Table<Byte, String> table = new Table(5);
         
         buildTable(table, root, 2, "");
         
-        System.out.println("..done");
-        
-        System.out.println("getOutput:");
-        
         byte[] output = getOutput(table, root);
-        
-        System.out.println("..done");
         
         File decompressedFile = new File("huffmanfiles/decompressed" + filetype);
         
@@ -108,12 +90,8 @@ public class Decompression {
             in.read(bytes3);
             int treeStringLength = ByteBuffer.wrap(bytes3).getInt();
             
-            System.out.println("formatData (treeString)");
             treeString = formatData(in, treeStringLength);
-            System.out.println("..done");
-            System.out.println("formatData (compressedData)");
             compressedData = formatData(in, dataLength);
-            System.out.println("..done");
             in.close();
         } catch (IOException e) {
             System.out.println(e);

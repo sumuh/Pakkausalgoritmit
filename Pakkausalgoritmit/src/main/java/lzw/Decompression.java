@@ -24,7 +24,7 @@ public class Decompression {
     
     public Decompression(File file) {
         this.compressedFile = file;
-        this.dict = new Table(4096);
+        this.dict = new Table(10);
     }
     
     /**
@@ -67,7 +67,6 @@ public class Decompression {
                     s = dict.get(newCode);
                 }
                 bw.write(s);
-                System.out.println(s);
                 c = "";
                 c += s.charAt(0);
                 dict.add(intTo12Bit(keyIndex), dict.get(oldCode) + c);

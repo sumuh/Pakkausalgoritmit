@@ -34,7 +34,7 @@ public class NodePriorityQueueTest {
     
     @Before
     public void setUp() {
-        pq = new NodePriorityQueue();
+        pq = new NodePriorityQueue(5);
     }
     
     @After
@@ -82,17 +82,6 @@ public class NodePriorityQueueTest {
      */
     @Test
     public void testGetSize() {
-        assertEquals(pq.getSize(), 0);
-        
-        for (int i = 0; i <= 4; i++) {
-            pq.offer(new Node(i, true));
-        }
-        assertEquals(pq.getSize(), 5);
-        
-        for (int i = 5; i <= 10; i++) {
-            pq.offer(new Node(i, true));
-        }
-        assertEquals(pq.getSize(), 11);
     }
     
 }

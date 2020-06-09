@@ -49,38 +49,20 @@ public class Compression {
         OrderedList<Node> initialNodes = this.initialOrder();
         root = initialNodes.get(0);
         
-        NodePriorityQueue pq = new NodePriorityQueue();
-        Table<Byte, String> table = new Table(initialNodes.length());
+        NodePriorityQueue pq = new NodePriorityQueue(initialNodes.length());
+        Table<Byte, String> table = new Table(5);
 
         for (Node node : initialNodes) {
             pq.offer(node);
         }
         
-        System.out.println("-Compression-");
-        
-        System.out.println("buildTree:");
-        
         buildTree(pq);
-        
-        System.out.println("..done");
-        
-        System.out.println("buildTable:");
         
         buildTable(table, root, 2, "");
         
-        System.out.println("..done");
-        
-        System.out.println("compressToString:");
-        
         String compressedData = compressToString(table);
         
-        System.out.println("..done");
-        
-        System.out.println("treeToString:");
-        
         this.treeToString(root);
-        
-        System.out.println("..done");
         
         File file = new File("huffmanfiles/compressed.bin");
         writeToFile(file, compressedData);

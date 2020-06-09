@@ -32,7 +32,7 @@ public class Entry<K, V> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.key);
+        hash = 31 * hash + key.hashCode();
         return hash;
     }
 

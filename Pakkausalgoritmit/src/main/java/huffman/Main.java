@@ -36,16 +36,16 @@ public class Main {
 //        byte[] input2 = new byte[]{6, 6, 2, 4, 3};
 //        
         File txt = new File("huffmanfiles/textfile.txt");
-        try {
-            FileWriter fw = new FileWriter(txt);
-            Random rand = new Random();
-            for (int i = 0; i < 100000; i++) {
-                fw.write("kl");
-            }
-            fw.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            FileWriter fw = new FileWriter(txt);
+//            Random rand = new Random();
+//            for (int i = 0; i < 100000; i++) {
+//                fw.write("ab");
+//            }
+//            fw.close();
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
         
         Compression c = new Compression(txt);
         File compressed = c.compress();
