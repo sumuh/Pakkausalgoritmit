@@ -10,12 +10,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
-import java.util.Iterator;
-import java.util.PriorityQueue;
 import tietorakenteet.*;
 
 /**
- *
+ * Tiivistää tiedostoja Huffman-algoritmilla. Periaatteessa voisi tiivistää mitä tahansa tiedostotyyppiä koska käsittelee tiedostoa tavuina,
+ * mutta käytännössä vain tekstitiedostojen tiivistäminen toimii.
+ * 
  * @author Susanna Muhli
  */
 public class Compression {
@@ -35,6 +35,7 @@ public class Compression {
     }
     
     /**
+     * Tiivistää konstruktorin parametrina saadun tiedoston
      * 
      * @return tiivistetty data .bin-tiedostona
      */
@@ -64,13 +65,18 @@ public class Compression {
         
         this.treeToString(root);
         
-        File file = new File("huffmanfiles/compressed.bin");
-        writeToFile(file, compressedData);
+        String fileName = inputFile.getName();
+        // tiedoston nimi ilman päätettä
+        String[] split = fileName.split("\\.");
         
-        return file;
+        File retFile = new File("huffmanfiles/" + split[0] + "_compressed.bin");
+        writeToFile(retFile, compressedData);
+        
+        return retFile;
     }
     
     /**
+     * Tiivistää inputFilen sisällön tavu kerrallaan stringiin Huffman-tablen avulla
      * 
      * @param table
      * @return input-data tiivistettynä stringiin huffman-tablen mukaan
@@ -85,6 +91,7 @@ public class Compression {
     }
     
     /**
+     * Kirjoittaa tiedostoon ensin otsakkeet ja sitten formatAndWriteDataToFile-metodin avulla Huffman-puun stringinä sekä varsinaisen datan
      * 
      * @param file
      * @param compressedData 
@@ -104,7 +111,7 @@ public class Compression {
             out.write(bytes3);
             
             
-            // kirjoita data tiedostoon
+            // kirjoita loppu data tiedostoon
             formatAndWriteDataToFile(out, treeString);
             formatAndWriteDataToFile(out, compressedData);
             
@@ -114,6 +121,12 @@ public class Compression {
         }
     }
     
+    /**
+     * Tekee stringin perusteella tavuja ja kirjoittaa tavut tiedostoon
+     * 
+     * @param out
+     * @param data 
+     */
     public void formatAndWriteDataToFile(FileOutputStream out, String data) {
         try {
             String s = "";
@@ -186,7 +199,7 @@ public class Compression {
     public void treeToString(Node node) {
         if (node.getIsLeaf()) {
             treeString += "1";
-            //String s1 = String.format("%8s", Integer.toBinaryString(node.getByteValue() & 0xFF)).replace(' ', '0');
+            
             String s1 = Integer.toBinaryString((node.getByteValue() & 0xFF) + 0x100).substring(1);
             
             treeString += s1;
@@ -198,7 +211,9 @@ public class Compression {
         }
     }
     
+    
     /**
+     * Rakentaa tablen jossa on tavut ja niitä vastaavat koodit
      * 
      * @param table
      * @param node

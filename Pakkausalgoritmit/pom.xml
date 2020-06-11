@@ -50,6 +50,8 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Main.*</exclude>
+                        <exclude>**/*Tester.*</exclude>
+                        <exclude>ui/**/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>  

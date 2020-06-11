@@ -26,6 +26,7 @@ public class DecompressionTest {
     
     private Compression c;
     private Decompression d;
+    private File decompressed;
     private File file;
     
     public DecompressionTest() {
@@ -55,10 +56,13 @@ public class DecompressionTest {
         c = new Compression(inputFile);
         file = c.compress();
         this.d = new Decompression(file, ".bin");
+        inputFile.delete();
+        
     }
     
     @After
     public void tearDown() {
+        
     }
 
     /**
@@ -66,7 +70,7 @@ public class DecompressionTest {
      */
     @Test
     public void testDecompress() {
-        File decompressed = d.decompress();
+        decompressed = d.decompress();
         
         try {
             byte[] fileContent = Files.readAllBytes(decompressed.toPath());
@@ -78,6 +82,8 @@ public class DecompressionTest {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        
+        decompressed.delete();
         
     }
 

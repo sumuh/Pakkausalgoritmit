@@ -25,20 +25,21 @@ public class Decompression {
     private int index;
     private String filetype;
     private int originalDataLength;
-    private File file;
+    private File inputFile;
     
-    public Decompression(File file, String filetype) {
-        this.file = file;
+    public Decompression(File inputFile, String filetype) {
+        this.inputFile = inputFile;
         this.filetype = filetype;
     }
     
     /**
+     * Purkaa konstruktorin parametrina saadun tiedoston
      * 
      * @return dekompressoitu tiedosto
      */
     public File decompress() {
         
-        readFile(file);
+        readFile(inputFile);
         
         chars = treeString.toCharArray();
         index = 0;
@@ -53,21 +54,25 @@ public class Decompression {
         
         byte[] output = getOutput(table, root);
         
-        File decompressedFile = new File("huffmanfiles/decompressed" + filetype);
+        String fileName = inputFile.getName();
+        String[] split = fileName.split("\\_");
+        
+        File retFile = new File("huffmanfiles/" + split[0] + "_decompressed" + filetype);
         
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(decompressedFile);
+            out = new FileOutputStream(retFile);
             out.write(output);
             out.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         
-        return decompressedFile;
+        return retFile;
     }
     
     /**
+     * Lukee tiedostosta ensin kolme otsaketta ja sen jälkeen lopun datan formatData-metodin avulla
      * 
      * @param file 
      */
@@ -77,7 +82,7 @@ public class Decompression {
         try {
             in = new FileInputStream(file);
             
-            //read header info
+            // lue otsakkeet
             byte[] bytes = new byte[10];
             in.read(bytes);
             originalDataLength = ByteBuffer.wrap(bytes).getInt();
@@ -90,15 +95,18 @@ public class Decompression {
             in.read(bytes3);
             int treeStringLength = ByteBuffer.wrap(bytes3).getInt();
             
+            // lue Huffman-puun string-esitys ja varsinainen tiivistetty data
             treeString = formatData(in, treeStringLength);
             compressedData = formatData(in, dataLength);
             in.close();
+            
         } catch (IOException e) {
             System.out.println(e);
         }
     }
     
     /**
+     * Muodostaa datasta 8-bitin "tavuja", jotka palauttaa stringissä
      * 
      * @param in
      * @param length
@@ -131,9 +139,10 @@ public class Decompression {
     }
     
     /**
+     * Tekee syötteessä annetusta stringistä "8-bittisen" eli lisää tarvittaessa nollia
      * 
      * @param s
-     * @return syötteenä annettu string "8-bittisenä" (metodi lisää tarvittavat nollat)
+     * @return s
      */
     public static String addPadding(String s) {
         int padding = 8 - s.length();
@@ -146,6 +155,8 @@ public class Decompression {
     }
     
     /**
+     * Rakentaa tiedostosta luetun Huffman-puun string-esityksen mukaan varsinaisen puun rakenteen
+     * 
      * @return juurinode
      */
     public Node buildTree() {
@@ -156,7 +167,8 @@ public class Decompression {
             for (j = index + 1; j < index + 9; j++) {
                 s += chars[j];
             }
-            byte b = Byte.parseByte(s, 2);
+            //byte b = Byte.parseByte(s, 2);
+            byte b = (byte) Integer.parseInt(s, 2);
             Node node = new Node(1, true);
             node.setByteValue(b);
             index = j;
@@ -171,6 +183,7 @@ public class Decompression {
     }
     
     /**
+     * Rakentaa kääntämisessä käytettävän Huffman-tablen
      * 
      * @param table
      * @param node
@@ -208,6 +221,13 @@ public class Decompression {
         return s;
     }
     
+    /**
+     * Hoitaa varsinaisen purkamisen. Lukee tiivistettyä dataa ja purkaa sen Huffman-tablen ja puun avulla.
+     * 
+     * @param table
+     * @param root
+     * @return 
+     */
     public byte[] getOutput(Table<Byte, String> table, Node root) {
         byte[] output = new byte[originalDataLength];
         int index = 0;

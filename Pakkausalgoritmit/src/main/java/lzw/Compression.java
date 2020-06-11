@@ -13,38 +13,56 @@ import java.nio.file.Files;
 import tietorakenteet.Table;
 
 /**
- *
+ * Tiivistää tekstitiedostoja Lempel-Ziv-Welch-algoritmin avulla
+ * 
  * @author Susanna Muhli
  */
 public class Compression {
     
     private Table<String, String> dict;
-    private File file;
+    private File inputFile;
     private byte[] fileContent;
     
-    public Compression(File file) {
-        this.file = file;
+    public Compression(File inputFile) {
+        this.inputFile = inputFile;
         this.dict = new Table(10);
     }
     
     /**
+     * Tiivistää annetun tiedoston
      * 
      * @return tiivistetty tiedosto
      */
     public File compress() {
         
         try {
-            fileContent = Files.readAllBytes(file.toPath());
+            fileContent = Files.readAllBytes(inputFile.toPath());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         
-        //alustetaan table arvoilla 0-255
-        
+        //alustetaan dictionary arvoilla 0-255
         for (int i = 0; i < 256; i++) {
             String key = intTo12Bit(i);
             dict.add(key, "" + (char) i);
         }
+        
+        String fileName = inputFile.getName();
+        String[] split = fileName.split("\\.");
+        File retFile = new File("lzwfiles/" + split[0] + "_compressed.bin");
+        
+        writeToFile(retFile);
+        
+        return retFile;
+        
+    }
+    
+    /**
+     * Hoitaa varsinaisen tiivistämisen
+     * 
+     * @param retFile 
+     */
+    public void writeToFile(File retFile) {
         
         int keyIndex = 256;
         String s = "";
@@ -52,9 +70,8 @@ public class Compression {
         char ch = (char) fileContent[0];
         s += ch;
         
-        File retFile = new File("lzwfiles/compressed.bin");
-        
         try {
+            
             FileWriter fw = new FileWriter(retFile);
             BufferedWriter bw = new BufferedWriter(fw);
             
@@ -84,17 +101,15 @@ public class Compression {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        
-        return retFile;
-        
     }
     
     /**
+     * Tekee integeristä "12-bittisen" stringin dictionarya varten. Static koska myös Decompression-luokka käyttää tätä.
      * 
      * @param i
      * @return string, jossa 12-bittinen esitys parametrista
      */
-    public String intTo12Bit(int i) {
+    public static String intTo12Bit(int i) {
         String s = Integer.toBinaryString(i);
         StringBuilder sb = new StringBuilder();
         int zeroes = 12 - s.length();

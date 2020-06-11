@@ -14,16 +14,17 @@ import java.io.IOException;
 import tietorakenteet.Table;
 
 /**
- *
+ * Purkaa tiedostoja Lempel-Ziv-Welch-algoritmilla
+ * 
  * @author Susanna Muhli
  */
 public class Decompression {
     
     private Table<String, String> dict;
-    private File compressedFile;
+    private File inputFile;
     
-    public Decompression(File file) {
-        this.compressedFile = file;
+    public Decompression(File inputFile) {
+        this.inputFile = inputFile;
         this.dict = new Table(10);
     }
     
@@ -33,24 +34,38 @@ public class Decompression {
      */
     public File decompress() {
         
-        // alustetaan table
-        
+        // alustetaan dictionary
         for (int i = 0; i < 256; i++) {
-            String key = intTo12Bit(i);
+            String key = Compression.intTo12Bit(i);
             dict.add(key, "" + (char) i);
         }
         
+        String fileName = inputFile.getName();
+        String[] split = fileName.split("\\_");
+        File retFile = new File("lzwfiles/" + split[0] + "_decompressed.txt");
         
-        int keyIndex = 256;
+        readAndWriteToFile(inputFile, retFile);
         
-        String oldCode = "";
-        String newCode = "";
-        String s = "";
-        String c = "";
-        File retFile = new File("lzwfiles/decompressed.txt");
+        return retFile;
+        
+    }
+    
+    /**
+     * Hoitaa varsinaisen tiedoston lukemisen ja purkamisen
+     * @param inputFile
+     * @param retFile 
+     */
+    public void readAndWriteToFile(File inputFile, File retFile) {
         
         try {
-            FileReader fr = new FileReader(compressedFile);
+            int keyIndex = 256;
+        
+            String oldCode = "";
+            String newCode = "";
+            String s = "";
+            String c = "";
+        
+            FileReader fr = new FileReader(inputFile);
             BufferedReader br = new BufferedReader(fr);
             
             FileWriter fw = new FileWriter(retFile);
@@ -69,7 +84,7 @@ public class Decompression {
                 bw.write(s);
                 c = "";
                 c += s.charAt(0);
-                dict.add(intTo12Bit(keyIndex), dict.get(oldCode) + c);
+                dict.add(Compression.intTo12Bit(keyIndex), dict.get(oldCode) + c);
                 keyIndex++;
                 oldCode = newCode;
             }
@@ -84,28 +99,6 @@ public class Decompression {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        
-        return retFile;
-        
     }
-    
-    /**
-     * 
-     * @param i
-     * @return string, jossa 12-bittinen esitys parametrista
-     */
-    public String intTo12Bit(int i) {
-        String s = Integer.toBinaryString(i);
-        StringBuilder sb = new StringBuilder();
-        int zeroes = 12 - s.length();
-        for (int j = 0; j < zeroes; j++) {
-            sb.append(0);
-        }
-        for (int j = zeroes; j < 12; j++) {
-            sb.append(s.charAt(j - zeroes));
-        }
-        return sb.toString();
-    }
-    
     
 }

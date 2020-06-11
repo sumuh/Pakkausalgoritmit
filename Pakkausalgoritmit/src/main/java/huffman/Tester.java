@@ -6,6 +6,7 @@
 package huffman;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,9 +23,11 @@ public class Tester {
      */
     public static void main(String[] args) {
         
-        File txt = new File("huffmanfiles/textfile.txt");
+        File txt = new File("huffmanfiles/tester.txt");
         
-        int n = 100000;
+        // n: suurin määrä kilotavuja mitä tiedostoon kirjoitetaan.
+        // esim. jos n = 100 niin ohjelmaa testataan 1 kB, 10 kB ja 100 kB tiedostokoolla
+        int n = 100;
         long t;
         
         long[] timesC = new long[n];
@@ -33,7 +36,7 @@ public class Tester {
         
         // testataan compression-metodia
         int index1 = 0;
-        for (int i = 10; i <= n; i *= 10) {
+        for (int i = 1; i <= n; i *= 10) {
             writeToFile(txt, i);
             t = System.nanoTime();
             Compression c = new Compression(txt);
@@ -46,14 +49,14 @@ public class Tester {
         System.out.println("Huffman compression:");
         
         int index2 = 0;
-        for (int i = 10; i <= n; i *= 10) {
-            System.out.println(i + ": " + timesC[index2] / 1000000.0 + " ms");
+        for (int i = 1; i <= n; i *= 10) {
+            System.out.println(i + " kt: " + timesC[index2] / 1000000.0 + " ms");
             index2++;
         }
         
         // testataan decompression-metodia
         int index3 = 0;
-        for (int i = 10; i <= n; i *= 10) {
+        for (int i = 1; i <= n; i *= 10) {
             writeToFile(txt, i);
             Compression c = new Compression(txt);
             File compressed = c.compress();
@@ -68,20 +71,22 @@ public class Tester {
         System.out.println("Huffman decompression:");
         
         int index4 = 0;
-        for (int i = 10; i <= n; i *= 10) {
-            System.out.println(i + ": " + timesD[index4] / 1000000.0 + " ms");
+        for (int i = 1; i <= n; i *= 10) {
+            System.out.println(i + " kt: " + timesD[index4] / 1000000.0 + " ms");
             index4++;
         }
     }
     
     public static void writeToFile(File file, int n) {
         try {
-            FileWriter fw = new FileWriter(file);
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] bytes = new byte[n * 1000];
             Random rand = new Random();
-            for (int i = 0; i < n; i++) {
-                fw.write(rand.nextInt(10));
+            for (int i = 0; i < n * 1000; i++) {
+                bytes[i] = (byte) rand.nextInt();
             }
-            fw.close();
+            out.write(bytes);
+            out.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

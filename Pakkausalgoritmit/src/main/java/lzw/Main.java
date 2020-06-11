@@ -21,7 +21,7 @@ public class Main {
      */
     public static void main(String[] args) {
         
-        File txt = new File("lzwfiles/textfile.txt");
+        File txt = new File("lzwfiles/text.txt");
         try {
             FileWriter fw = new FileWriter(txt);
             for (int i = 0; i < 100000; i++) {
