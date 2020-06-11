@@ -23,10 +23,10 @@ public class Tester {
      */
     public static void main(String[] args) {
         
-        File txt = new File("huffmanfiles/tester.txt");
+        File txt = new File("huffmanfiles/text.txt");
         
         // n: suurin määrä kilotavuja mitä tiedostoon kirjoitetaan.
-        // esim. jos n = 100 niin ohjelmaa testataan 1 kB, 10 kB ja 100 kB tiedostokoolla
+        // esim. jos n = 100 niin ohjelmaa testataan 1 kt, 10 kt ja 100 kt tiedostokoolla
         int n = 100;
         long t;
         
@@ -83,7 +83,7 @@ public class Tester {
             byte[] bytes = new byte[n * 1000];
             Random rand = new Random();
             for (int i = 0; i < n * 1000; i++) {
-                bytes[i] = (byte) rand.nextInt();
+                bytes[i] = (byte) rand.nextInt(20);
             }
             out.write(bytes);
             out.close();

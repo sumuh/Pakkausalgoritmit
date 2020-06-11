@@ -22,10 +22,10 @@ public class Tester {
      */
     public static void main(String[] args) {
         
-        File txt = new File("lzwfiles/textfile.txt");
+        File txt = new File("lzwfiles/text.txt");
         
         // n: suurin määrä kilotavuja mitä tiedostoon kirjoitetaan.
-        // esim. jos n = 100 niin ohjelmaa testataan (noin) 1 kB, 10 kB ja 100 kB tiedostokoolla
+        // esim. jos n = 100 niin ohjelmaa testataan (noin) 1 kt, 10 kt ja 100 kt tiedostokoolla
         int n = 100;
         long t;
         
@@ -78,34 +78,17 @@ public class Tester {
     
     public static void writeToFile(File file, int n) {
         try {
-            FileWriter fw = new FileWriter(file);
-            while (file.length() < n * 1000) {
-                fw.write(loremIpsum());
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] bytes = new byte[n * 1000];
+            Random rand = new Random();
+            for (int i = 0; i < n * 1000; i++) {
+                bytes[i] = (byte) rand.nextInt(20);
             }
-            fw.close();
+            out.write(bytes);
+            out.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-    
-    public static char[] randomChar(int size) {
-        char[] arr = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'
-        , 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-        
-        char[] ret = new char[size];
-        Random rand = new Random();
-        for (int i = 0; i < size; i++) {
-            int n = rand.nextInt(arr.length);
-            ret[i] = arr[n];
-        }
-        return ret;
-    }
-    
-    public static String loremIpsum() {
-        String s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis sed libero ut eleifend. Cras finibus nunc erat, ut tristique eros fringilla euismod. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer at tempus massa, et varius eros. Mauris dignissim arcu ut ipsum venenatis, nec hendrerit quam elementum. Vestibulum ac elementum enim, non hendrerit purus. Aliquam vitae sem vitae metus tempus finibus. Cras sed quam in odio ornare finibus quis quis sem. Morbi lobortis eros id leo cursus varius. Sed sed ipsum quis nisi venenatis gravida a nec arcu. Donec condimentum sem nec consequat feugiat.";
-        String s2 = "Lorem ipsum dolor sit amet";
-        return s2;
-    }
-    
     
 }
