@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.PriorityQueue;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,16 +24,13 @@ import tietorakenteet.*;
  *
  * @author Susanna Muhli
  */
-public class CompressionTest {
+public class HuffmanTest {
     
     private byte[] input;
     private Compression c;
-    private NodePriorityQueue pq;
-    private OrderedList<Node> initialNodes;
-    private Table<Byte, String> table;
-    private Node root;
+    private Decompression d;
     
-    public CompressionTest() {
+    public HuffmanTest() {
     }
     
     @BeforeClass
@@ -77,17 +75,17 @@ public class CompressionTest {
             byte[] bytes = new byte[10];
             in.read(bytes);
             int originalDataLength = ByteBuffer.wrap(bytes).getInt();
-            assertTrue(originalDataLength == 5);
+            assertTrue("originalDataLength-muuttuja on oikein", originalDataLength == 5);
             
             byte[] bytes2 = new byte[10];
             in.read(bytes2);
             int compressedDataLength = ByteBuffer.wrap(bytes2).getInt();
-            assertTrue(compressedDataLength == 10);
+            assertTrue("compressedDataLength-muuttuja on oikein", compressedDataLength == 10);
             
             byte[] bytes3 = new byte[10];
             in.read(bytes3);
             int treeStringLength = ByteBuffer.wrap(bytes3).getInt();
-            assertTrue(treeStringLength == 39);
+            assertTrue("treeStringLength-muuttuja on oikein", treeStringLength == 39);
             
             int i;
             int[] expValues = new int[]{32, 80, 52, 18, 12};
@@ -101,14 +99,42 @@ public class CompressionTest {
         }
     }
     
-    public String addPadding(String s) {
-        int padding = 8 - s.length();
-        String paddingString = "";
-        for (int j = 0; j < padding; j++) {
-            paddingString += "0";
+    /**
+     * Test of decompress method, of class Decompression.
+     */
+    @Test
+    public void testDecompress() {
+        File compressed = c.compress();
+        d = new Decompression(compressed, ".txt");
+        File decompressed = d.decompress();
+        
+        try {
+            byte[] fileContent = Files.readAllBytes(decompressed.toPath());
+            assertEquals("puretun tiedosto sisältö on oikein", fileContent[0], 6);
+            assertEquals("puretun tiedosto sisältö on oikein", fileContent[1], 6);
+            assertEquals("puretun tiedosto sisältö on oikein", fileContent[2], 2);
+            assertEquals("puretun tiedosto sisältö on oikein", fileContent[3], 4);
+            assertEquals("puretun tiedosto sisältö on oikein", fileContent[4], 3);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        s = paddingString + s;
-        return s;
+        
+        decompressed.delete();
+        
+    }
+    
+    /**
+     * Test of addPadding method, of class Compression.
+     */
+    @Test
+    public void testAddPadding() {
+        d = new Decompression(c.compress(), ".txt");
+        String expResult1 = "00001111";
+        String expResult2 = "00000000";
+        String s1 = d.addPadding("1111");
+        String s2 = d.addPadding("0000");
+        assertEquals("addPadding toimii", expResult1, s1);
+        assertEquals("addPadding toimii", expResult2, s2);
     }
 
     /**
