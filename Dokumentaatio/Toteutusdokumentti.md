@@ -14,6 +14,10 @@ tilaan.
 Purkamisohjelma muodostaa tiedoston alussa kuljetetun tiedon mukaan saman Huffman-puun ja taulukon kuin tiivistämisohjelma ja kääntää 
 tiivistetyn datan alkuperäiseksi dataksi niiden perusteella.
 
+Kuvassa esimerkki Huffman-puusta, jossa esim. tavun 2 koodi olisi 01.
+
+![Hufman-puu](https://github.com/sumuh/Pakkausalgoritmit/blob/master/Dokumentaatio/huffmanpuu.png)
+
 #### LZW
 
 Lempel-Ziv-Welch-algoritmi perustuu tiedostossa toistuvien merkkijonojen hyödyntämiseen. Tiivistämisohjelma lukee tiedostoa ja rakentaa 
