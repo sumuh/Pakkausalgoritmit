@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.Arrays;
 import tietorakenteet.*;
 
 /**
@@ -138,8 +139,10 @@ public class Compression {
                         s += "0";
                     }
                     out.write((byte) Integer.parseInt(s, 2));
+                    //out.write(s.getBytes()[0]);
                 } else if (s.length() == 8) {
                     out.write((byte) Integer.parseInt(s, 2));
+                    //out.write(s.getBytes()[0]);
                     s = "";
                 }
             }
@@ -200,9 +203,20 @@ public class Compression {
         if (node.getIsLeaf()) {
             treeString += "1";
             
-            String s1 = Integer.toBinaryString((node.getByteValue() & 0xFF) + 0x100).substring(1);
+            //String s1 = Integer.toBinaryString((node.getByteValue() & 0xFF) + 0x100).substring(1);
+            String s2 = Integer.toBinaryString(node.getByteValue() + 0x100);
             
-            treeString += s1;
+            // jos stringissä on 8 bittiä se on positiivinen ja siihen lisätään 0 merkkaamaan positiivisuutta
+            // (negatiivisilla on ykkönen edessä)
+            if (s2.length() == 8) {
+                String signed = "0" + s2;
+                treeString += signed;
+                System.out.println(signed);
+            } else {
+                treeString += s2;
+                System.out.println(s2);
+            }
+            
             return;
         } else {
             treeString += "0";

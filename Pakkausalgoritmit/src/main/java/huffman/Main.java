@@ -23,22 +23,22 @@ public class Main {
      */
     public static void main(String[] args) {
 //        
-        File text = new File("huffmanfiles/text.txt");
-        try {
-            FileWriter fw = new FileWriter(text);
-            Random rand = new Random();
-            for (int i = 0; i < 10000; i++) {
-                int n = rand.nextInt(50);
-                fw.write("" + n);
-            }
-            fw.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        Compression c = new Compression(text);
+        File file = new File("huffmanfiles/test.jpg");
+//        try {
+//            FileWriter fw = new FileWriter(file);
+//            Random rand = new Random();
+//            for (int i = 0; i < 10000; i++) {
+//                int n = rand.nextInt(50);
+//                fw.write("" + n);
+//            }
+//            fw.close();
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        
+        Compression c = new Compression(file);
         File compressed = c.compress();
-        Decompression d = new Decompression(compressed, ".txt");
+        Decompression d = new Decompression(compressed, ".jpg");
         File decompressed = d.decompress();
     }
     

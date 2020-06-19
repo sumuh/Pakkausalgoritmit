@@ -6,7 +6,6 @@
 package tietorakenteet;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * ArrayListin kaltainen lista
