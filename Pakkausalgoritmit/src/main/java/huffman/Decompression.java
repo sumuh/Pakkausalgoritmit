@@ -165,32 +165,10 @@ public class Decompression {
             String s = "";
             int j;
             
-            for (j = index + 1; j < index + 10; j++) {
+            for (j = index + 1; j < index + 9; j++) {
                 s += chars[j];
             }
-            byte b;
-            // onko pos vai neg
-            System.out.println(s.charAt(0));
-            if (s.charAt(0) == '1') {
-                System.out.println("neg");
-                char[] ninebits = s.toCharArray();
-                String s2 = "";
-                for (int i = 1; i < 9; i++) {
-                    s2 += ninebits[i];
-                }
-                b = (byte) Integer.parseInt(s2, 2);
-                b *= -1;
-                System.out.println(b);
-            } else {
-                System.out.println("pos");
-                char[] ninebits = s.toCharArray();
-                String s2 = "";
-                for (int i = 1; i < 9; i++) {
-                    s2 += ninebits[i];
-                }
-                b = (byte) Integer.parseInt(s2, 2);
-                System.out.println(b);
-            }
+            byte b = ((byte) Integer.parseInt(s, 2));
             Node node = new Node(1, true);
             node.setByteValue(b);
             index = j;
