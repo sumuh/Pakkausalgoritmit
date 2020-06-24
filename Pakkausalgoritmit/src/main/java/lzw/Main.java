@@ -21,17 +21,17 @@ public class Main {
      */
     public static void main(String[] args) {
         
-        File txt = new File("lzwfiles/text.txt");
-        try {
-            FileWriter fw = new FileWriter(txt);
-            for (int i = 0; i < 100000; i++) {
-                fw.write("abbaccab");
-            }
-            fw.flush();
-            fw.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        File txt = new File("lzwfiles/bronte.txt");
+//        try {
+//            FileWriter fw = new FileWriter(txt);
+//            for (int i = 0; i < 100000; i++) {
+//                fw.write("abbaccab");
+//            }
+//            fw.flush();
+//            fw.close();
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
 //        
         Compression c = new Compression(txt);
         File f = c.compress();

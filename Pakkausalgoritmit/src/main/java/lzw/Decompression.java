@@ -8,6 +8,7 @@ package lzw;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class Decompression {
         
         // alustetaan dictionary
         for (int i = 0; i < 256; i++) {
-            String key = Compression.intTo12Bit(i);
+            String key = Compression.intTo16Bit(i);
             dict.add(key, "" + (char) i);
         }
         
@@ -64,17 +65,20 @@ public class Decompression {
             String newCode = "";
             String s = "";
             String c = "";
-        
-            FileReader fr = new FileReader(inputFile);
-            BufferedReader br = new BufferedReader(fr);
             
             FileWriter fw = new FileWriter(retFile);
             BufferedWriter bw = new BufferedWriter(fw);
             
-            oldCode = br.readLine();
+            FileInputStream in = new FileInputStream(inputFile);
+            
+            oldCode = Compression.intTo16Bit(in.read());
+                
             bw.write(dict.get(oldCode));
             
-            while ((newCode = br.readLine()) != null) {
+            // jotain hämärää tässä
+            int j;
+            while ((j = in.read()) != -1) {
+                newCode = Compression.intTo16Bit(j);
                 if (dict.getLzw(newCode) == null) {
                     s = dict.get(oldCode);
                     s = s + c;
@@ -84,16 +88,14 @@ public class Decompression {
                 bw.write(s);
                 c = "";
                 c += s.charAt(0);
-                dict.add(Compression.intTo12Bit(keyIndex), dict.get(oldCode) + c);
+                dict.add(Compression.intTo16Bit(keyIndex), dict.get(oldCode) + c);
                 keyIndex++;
                 oldCode = newCode;
             }
             
             fw.flush();
             bw.flush();
-            fr.close();
             fw.close();
-            br.close();
             bw.close();
             
         } catch (IOException e) {

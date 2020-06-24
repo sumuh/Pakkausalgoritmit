@@ -26,7 +26,7 @@ public class Tester {
         
         // n: suurin määrä kilotavuja mitä tiedostoon kirjoitetaan.
         // esim. jos n = 100 niin ohjelmaa testataan (noin) 1 kt, 10 kt ja 100 kt tiedostokoolla
-        int n = 100;
+        int n = 1000;
         long t;
         
         long[] timesC = new long[n];

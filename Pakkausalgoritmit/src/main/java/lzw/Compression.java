@@ -7,8 +7,10 @@ package lzw;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import tietorakenteet.Table;
 
@@ -43,13 +45,13 @@ public class Compression {
         
         //alustetaan dictionary arvoilla 0-255
         for (int i = 0; i < 256; i++) {
-            String key = intTo12Bit(i);
-            dict.add(key, "" + (char) i);
+            String key = intTo16Bit(i);
+            dict.add("" + (char) i, key);
         }
         
         String fileName = inputFile.getName();
         String[] split = fileName.split("\\.");
-        File retFile = new File("lzwfiles/" + split[0] + "_compressed.bin");
+        File retFile = new File("lzwfiles/" + split[0] + "_compressed.txt");
         
         writeToFile(retFile);
         
@@ -72,18 +74,14 @@ public class Compression {
         
         try {
             
-            FileWriter fw = new FileWriter(retFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            
-            bw.flush();
+            FileOutputStream out = new FileOutputStream(retFile);
             
             for (int i = 1; i < fileContent.length; i++) {
                 c = (char) fileContent[i];
                 String sc = s + c;
-                if (dict.getKey(sc) == null) {
-                    bw.write(dict.getKey(s));
-                    bw.newLine();
-                    dict.add(intTo12Bit(keyIndex), sc);
+                if (dict.getLzw(sc) == null) {
+                    out.write(Integer.parseInt(dict.get(s), 2));
+                    dict.add(sc, intTo16Bit(keyIndex));
                     keyIndex++;
                     s = "" + c;
                 } else {
@@ -91,12 +89,7 @@ public class Compression {
                 }
             }
 
-            bw.write(dict.getKey(s));
-            
-            fw.flush();
-            bw.flush();
-            fw.close();
-            bw.close();
+            out.write(Integer.parseInt(dict.get(s), 2));
             
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -104,19 +97,19 @@ public class Compression {
     }
     
     /**
-     * Tekee integeristä "12-bittisen" stringin dictionarya varten. Static koska myös Decompression-luokka käyttää tätä.
+     * Tekee integeristä "16-bittisen" stringin dictionarya varten. Static koska myös Decompression-luokka käyttää tätä.
      * 
      * @param i
-     * @return string, jossa 12-bittinen esitys parametrista
+     * @return string, jossa 16-bittinen esitys parametrista
      */
-    public static String intTo12Bit(int i) {
+    public static String intTo16Bit(int i) {
         String s = Integer.toBinaryString(i);
         StringBuilder sb = new StringBuilder();
-        int zeroes = 12 - s.length();
+        int zeroes = 16 - s.length();
         for (int j = 0; j < zeroes; j++) {
             sb.append(0);
         }
-        for (int j = zeroes; j < 12; j++) {
+        for (int j = zeroes; j < 16; j++) {
             sb.append(s.charAt(j - zeroes));
         }
         return sb.toString();

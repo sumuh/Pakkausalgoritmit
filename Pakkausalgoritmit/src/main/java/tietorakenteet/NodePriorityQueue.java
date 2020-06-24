@@ -78,7 +78,7 @@ public class NodePriorityQueue {
     }
     
     /**
-     * vaihtaa parameteinä annettujen nodejen paikkoja
+     * vaihtaa parametreinä annettujen nodejen paikkoja
      * @param i
      * @param j 
      */

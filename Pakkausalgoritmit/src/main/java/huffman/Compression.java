@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import tietorakenteet.*;
 
 /**
@@ -48,10 +49,21 @@ public class Compression {
             System.out.println(e.getMessage());
         }
         
-        OrderedList<Node> initialNodes = this.initialOrder();
-        root = initialNodes.get(0);
+        //OrderedList<Node> initialNodes = this.initialOrder();
+        Node[] initialNodes = new Node[256];
+        for (int i = 0; i < 256; i++) {
+            initialNodes[i] = new Node(0, true);
+            initialNodes[i].setByteValue((byte)(i-128));
+        }
+        for (byte b : input) {
+            initialNodes[b+128].increaseWeight();
+        }
         
-        NodePriorityQueue pq = new NodePriorityQueue(initialNodes.length());
+        //root = initialNodes.get(0);
+        root = initialNodes[0];
+        
+        //NodePriorityQueue pq = new NodePriorityQueue(initialNodes.length());
+        NodePriorityQueue pq = new NodePriorityQueue(initialNodes.length);
         Table<Byte, String> table = new Table(5);
 
         for (Node node : initialNodes) {
@@ -78,6 +90,7 @@ public class Compression {
     
     /**
      * Tiivistää inputFilen sisällön tavu kerrallaan stringiin Huffman-tablen avulla
+     * Metodi on todella hidas
      * 
      * @param table
      * @return input-data tiivistettynä stringiin huffman-tablen mukaan
@@ -138,6 +151,7 @@ public class Compression {
                     while (s.length() < 8) {
                         s += "0";
                     }
+                    
                     out.write((byte) Integer.parseInt(s, 2));
                 } else if (s.length() == 8) {
                     out.write((byte) Integer.parseInt(s, 2));
@@ -162,6 +176,7 @@ public class Compression {
                 if (b == node.getByteValue()) {
                     node.increaseWeight();
                     exists = true;
+                    break;
                 }
             }
             if (!exists) {
@@ -229,6 +244,7 @@ public class Compression {
         if (lastEdge != 2) {
             current += lastEdge;
         }
+        
         if (node.getIsLeaf()) {
             table.add(node.getByteValue(), current);
             current = "";

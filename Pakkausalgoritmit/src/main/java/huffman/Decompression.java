@@ -48,7 +48,7 @@ public class Decompression {
         
         root = buildTree();
         
-        Table<Byte, String> table = new Table(5);
+        Table<String, Byte> table = new Table(5);
         
         buildTable(table, root, 2, "");
         
@@ -190,7 +190,7 @@ public class Decompression {
      * @param lastEdge
      * @param current 
      */
-    public void buildTable(Table<Byte, String> table, Node node, int lastEdge, String current) {
+    public void buildTable(Table<String, Byte> table, Node node, int lastEdge, String current) {
         if (node == null) {
             return;
         }
@@ -198,7 +198,7 @@ public class Decompression {
             current += lastEdge;
         }
         if (node.getIsLeaf()) {
-            table.add(node.getByteValue(), current);
+            table.add(current, node.getByteValue());
             current = "";
         } else {
             buildTable(table, node.getLeftChild(), 0, current);
@@ -228,7 +228,7 @@ public class Decompression {
      * @param root
      * @return 
      */
-    public byte[] getOutput(Table<Byte, String> table, Node root) {
+    public byte[] getOutput(Table<String, Byte> table, Node root) {
         byte[] output = new byte[originalDataLength];
         int index = 0;
         
@@ -255,7 +255,7 @@ public class Decompression {
                 }
             }
             
-            output[arrIndex] = table.getKey(s);
+            output[arrIndex] = table.get(s);
             arrIndex++;
         }
         
