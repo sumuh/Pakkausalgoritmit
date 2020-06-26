@@ -189,6 +189,7 @@ public class Compression {
     }
     
     /**
+     * Rakentaa Huffman-puun yhdistelemällä nodeja
      * 
      * @param pq
      */

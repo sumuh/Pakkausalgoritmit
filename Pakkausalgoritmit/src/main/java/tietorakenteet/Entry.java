@@ -8,7 +8,7 @@ package tietorakenteet;
 import java.util.Objects;
 
 /**
- * Entry Table-luokkaa varten
+ * Entry Table-luokkaa varten, sisältää avain-arvo parin
  * 
  * @author Susanna Muhli
  * @param <K>

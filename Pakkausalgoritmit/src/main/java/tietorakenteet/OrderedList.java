@@ -24,7 +24,7 @@ public class OrderedList<E> implements Iterable<E> {
     }
     
     /**
-     * lisää listalle uuden arvon
+     * Lisää listalle uuden arvon
      * 
      * @param e 
      */
@@ -37,7 +37,7 @@ public class OrderedList<E> implements Iterable<E> {
     }
     
     /**
-     * poistaa listalta indeksissä i olevan arvon
+     * Poistaa listalta indeksissä i olevan arvon
      * 
      * @param i 
      */
@@ -62,7 +62,7 @@ public class OrderedList<E> implements Iterable<E> {
     }
     
     /**
-     * tuplaa listan koon
+     * Tuplaa listan koon
      */
     public void doubleSize() {
         Object newList[] = new Object[list.length * 2];
@@ -98,7 +98,7 @@ public class OrderedList<E> implements Iterable<E> {
     }
     
     /**
-     * tarkista onko indeksi sallituissa rajoissa
+     * Tarkista onko indeksi sallituissa rajoissa
      * 
      * @param i 
      */

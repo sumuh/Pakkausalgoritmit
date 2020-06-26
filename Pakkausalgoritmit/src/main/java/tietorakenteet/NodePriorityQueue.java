@@ -53,7 +53,7 @@ public class NodePriorityQueue {
     }
     
     /**
-     * kun poistetaan juurinode, siirretään tällä metodilla nodet paikoilleen
+     * Kun poistetaan juurinode, siirretään tällä metodilla nodet paikoilleen
      */
     public void heapifyDown() {
         int current = 1;
@@ -78,7 +78,8 @@ public class NodePriorityQueue {
     }
     
     /**
-     * vaihtaa parametreinä annettujen nodejen paikkoja
+     * Vaihtaa parametreinä annettujen nodejen paikkoja
+     * 
      * @param i
      * @param j 
      */

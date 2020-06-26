@@ -29,7 +29,7 @@ public class Table<K, V> implements Iterable<Entry> {
     }
     
     /**
-     * lisää tableen avain-arvo-parin
+     * Lisää tableen avain-arvo-parin
      * 
      * @param key
      * @param value 
@@ -124,6 +124,7 @@ public class Table<K, V> implements Iterable<Entry> {
     }
     
     /**
+     * Laskee hash-arvon jonka perusteella avaimia sijoitetaan ja haetaan indekseistä
      * 
      * @param key
      * @return hash-arvo avaimelle
@@ -135,8 +136,8 @@ public class Table<K, V> implements Iterable<Entry> {
     }
     
     /**
+     * Tuplaa tablen koon
      * 
-     * tuplaa tablen koon
      */
     public void resize() {
         int newCapacity = this.capacity * 2;

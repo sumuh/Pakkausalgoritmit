@@ -22,7 +22,53 @@ public class Tester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        File file = new File("bronte100.txt");
+        fileTest(file);
+    }
+    
+    // testaa olemassaolevan filen perusteella
+    public static void fileTest(File file) {
         
+        int n = 10;
+        
+        long[] times = new long[n];
+        long t;
+        for (int i = 0; i < n; i++) {
+            t = System.nanoTime();
+            Compression c = new Compression(file);
+            c.compress();
+            t = System.nanoTime() - t;
+            times[i] = t;
+        }
+        Arrays.sort(times);
+        long avg = getAverage(times);
+        System.out.println("average compression time: " + avg / 1000000.0 + " ms");
+        
+        times = new long[n];
+        for (int i = 0; i < n; i++) {
+            Compression c = new Compression(file);
+            File compressed = c.compress();
+            t = System.nanoTime();
+            Decompression d = new Decompression(compressed, ".txt");
+            d.decompress();
+            t = System.nanoTime() - t;
+            times[i] = t;
+        }
+        Arrays.sort(times);
+        avg = getAverage(times);
+        System.out.println("average decompression time: " + avg / 1000000.0 + " ms");
+    }
+    
+    public static long getAverage(long[] arr) {
+        long sum = 0;
+        for (long l : arr) {
+            sum += l;
+        }
+        return sum / (long) arr.length;
+    }
+    
+    // luo tiedoston jossa on satunnaisia lukuja ja testaa sen tiivistämistä ja purkamista
+    public static void randomTest() {
         File txt = new File("huffmanfiles/text.txt");
         
         // n: suurin määrä kilotavuja mitä tiedostoon kirjoitetaan.
