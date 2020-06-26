@@ -5,11 +5,10 @@
  */
 package lzw;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import tietorakenteet.Table;
@@ -70,22 +69,25 @@ public class Decompression {
             BufferedWriter bw = new BufferedWriter(fw);
             
             FileInputStream in = new FileInputStream(inputFile);
+            DataInputStream din = new DataInputStream(in);
             
-            oldCode = Compression.intTo16Bit(in.read());
+            short first = din.readShort();
+            oldCode = Compression.intTo16Bit((int) first);
                 
             bw.write(dict.get(oldCode));
+            bw.flush();
             
-            // jotain hämärää tässä
-            int j;
-            while ((j = in.read()) != -1) {
-                newCode = Compression.intTo16Bit(j);
+            short j;
+            while ((j = din.readShort()) != -1) {
+                newCode = Compression.intTo16Bit((int) j);
                 if (dict.getLzw(newCode) == null) {
-                    s = dict.get(oldCode);
-                    s = s + c;
+                    s = dict.get(oldCode) + c;
                 } else {
                     s = dict.get(newCode);
                 }
+                System.out.println(s);
                 bw.write(s);
+                bw.flush();
                 c = "";
                 c += s.charAt(0);
                 dict.add(Compression.intTo16Bit(keyIndex), dict.get(oldCode) + c);
@@ -97,6 +99,8 @@ public class Decompression {
             bw.flush();
             fw.close();
             bw.close();
+            in.close();
+            din.close();
             
         } catch (IOException e) {
             System.out.println(e.getMessage());

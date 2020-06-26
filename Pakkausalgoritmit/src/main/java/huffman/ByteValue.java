@@ -6,7 +6,9 @@
 package huffman;
 
 /**
- *
+ * Luokka on olemassa koska byte ei voi olla null, mutta nodeilla joko on tai ei ole byteä.
+ * Kun byte on oma luokkansa niin se voi olla tarvittaessa null.
+ * 
  * @author Susanna Muhli
  */
 public class ByteValue {

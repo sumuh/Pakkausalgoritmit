@@ -5,12 +5,10 @@
  */
 package lzw;
 
-import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import tietorakenteet.Table;
 
@@ -51,7 +49,7 @@ public class Compression {
         
         String fileName = inputFile.getName();
         String[] split = fileName.split("\\.");
-        File retFile = new File("lzwfiles/" + split[0] + "_compressed.txt");
+        File retFile = new File("lzwfiles/" + split[0] + "_compressed.bin");
         
         writeToFile(retFile);
         
@@ -75,12 +73,14 @@ public class Compression {
         try {
             
             FileOutputStream out = new FileOutputStream(retFile);
+            DataOutputStream dout = new DataOutputStream(out);
             
             for (int i = 1; i < fileContent.length; i++) {
                 c = (char) fileContent[i];
                 String sc = s + c;
                 if (dict.getLzw(sc) == null) {
-                    out.write(Integer.parseInt(dict.get(s), 2));
+                    // koska koodit ovat 16 bitin pituisia ne on kätevää kirjoittaa tiedostoon shorteina
+                    dout.writeShort(Short.parseShort(dict.get(s), 2));
                     dict.add(sc, intTo16Bit(keyIndex));
                     keyIndex++;
                     s = "" + c;
@@ -89,7 +89,12 @@ public class Compression {
                 }
             }
 
-            out.write(Integer.parseInt(dict.get(s), 2));
+            dout.writeShort(Short.parseShort(dict.get(s), 2));
+            dout.flush();
+            dout.close();
+            out.flush();
+            out.close();
+            
             
         } catch (IOException e) {
             System.out.println(e.getMessage());

@@ -57,10 +57,14 @@ public class Ui {
     public void huffmanCompression(File input, Scanner in) {
         System.out.println("Tiivistettävän tiedoston koko on " + input.length() / 1000 + " kt");
         System.out.print("Tiivistetään...");
+        
+        long t = System.nanoTime();
         huffman.Compression c = new huffman.Compression(input);
         File compressed = c.compress();
-        System.out.print(" valmis\n");
+        t = System.nanoTime() - t;
         
+        System.out.print(" valmis\n");
+        System.out.println("Aikaa kului " + t / 1000000.0 + " ms");
         System.out.println("Tiivistetyn tiedoston nimi on " + compressed.getName());
         System.out.println("Tiivistetyn tiedoston koko on " + compressed.length() / 1000 + " kt");
         System.out.println("");
@@ -75,10 +79,15 @@ public class Ui {
         System.out.print("Puretaan...");
         String fileName = input.getName();
         String[] split = fileName.split("\\.");
-        huffman.Decompression d = new huffman.Decompression(input, "." + split[1]);
-        File decompressed = d.decompress();
-        System.out.print(" valmis\n");
         
+        long t = System.nanoTime();
+        //huffman.Decompression d = new huffman.Decompression(input, "." + split[1]);
+        huffman.Decompression d = new huffman.Decompression(input, ".txt");
+        File decompressed = d.decompress();
+        t = System.nanoTime() - t;
+        
+        System.out.print(" valmis\n");
+        System.out.println("Aikaa kului " + t / 1000000.0 + " ms");
         System.out.println("Puretun tiedoston nimi on " + decompressed.getName());
         System.out.println("Puretun tiedoston koko on " + decompressed.length() / 1000 + " kt");
     }
@@ -86,10 +95,14 @@ public class Ui {
     public void lzwCompression(File input, Scanner in) {
         System.out.println("Tiivistettävän tiedoston koko on " + input.length() / 1000 + " kt");
         System.out.print("Tiivistetään...");
+        
+        long t = System.nanoTime();
         lzw.Compression c = new lzw.Compression(input);
         File compressed = c.compress();
-        System.out.print(" valmis\n");
+        t = System.nanoTime() - t;
         
+        System.out.print(" valmis\n");
+        System.out.println("Aikaa kului " + t / 1000000.0 + " ms");
         System.out.println("Tiivistetyn tiedoston nimi on " + compressed.getName());
         System.out.println("Tiivistetyn tiedoston koko on " + compressed.length() / 1000 + " kt");
         System.out.println("");
@@ -104,10 +117,14 @@ public class Ui {
         System.out.print("Puretaan...");
         String fileName = input.getName();
         String[] split = fileName.split("\\.");
+        
+        long t = System.nanoTime();
         lzw.Decompression d = new lzw.Decompression(input);
         File decompressed = d.decompress();
-        System.out.print(" valmis\n");
+        t = System.nanoTime() - t;
         
+        System.out.print(" valmis\n");
+        System.out.println("Aikaa kului " + t / 1000000.0 + " ms");
         System.out.println("Puretun tiedoston nimi on " + decompressed.getName());
         System.out.println("Puretun tiedoston koko on " + decompressed.length() / 1000 + " kt");
     }
