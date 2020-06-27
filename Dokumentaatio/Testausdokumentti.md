@@ -8,7 +8,9 @@ integerejä (välillä 0-19), sitten sama noin 10 kilotavun edestä ja vielä 10
 tiedostot purettiin. Tulokset ovat taulukoissa. Huom: purkamis-taulukossa tiedoston koko on alkuperäisen tiedoston koko eikä tiivistetyn
 tiedoston koko.
 
-#### Tiivistäminen
+#### Satunnaiset integerit
+
+##### Tiivistäminen
 
 Tiedoston koko | Huffman | LZW
 ---------------|---------|----
@@ -16,7 +18,7 @@ Tiedoston koko | Huffman | LZW
 10 kt | 518.0178 ms | 355.7193 ms
 100 kt | 28554.4319 ms | 39681.2608 ms
 
-#### Purkaminen
+##### Purkaminen
 
 Tiedoston koko | Huffman | LZW
 ---------------|---------|----
@@ -25,7 +27,21 @@ Tiedoston koko | Huffman | LZW
 100 kt | 15387.7518 ms | 65.5531 ms
 
 Tämä testaustapa on tietysti aika huono, koska satunnaiset integerit eivät kuvaa kovin hyvin tyypillisiä tekstitiedostoja, joissa
-toiset kirjaimet esiintyvät toisia useammin. Tarkoituksena on testata algoritmeja myös "normaaleilla" tekstitiedostoilla. Tällä testaustavalla
-myös LZW:llä tiivistetystä tiedostosta tuli kooltaan isompi kuin alkuperäisestä tiedostosta, mikä ehkä johtuu juuri tästä satunnaisuudesta 
-ja siitä, että samat merkkijonot tuskin toistuvat kovin usein. Kuten taulukosta näkyy, LZW:llä purkamiseen menneet ajat näyttävät oudoilta, 
-mikä varmaan johtuu tästä samasta syystä.
+toiset kirjaimet esiintyvät toisia useammin. Siksi testasin algoritmeja myös 40 kt ja 100 kt tekstitiedostoilla, jotka sisälsivät tekstiä Emily Brontën Humisevasta harjusta.
+Tulokset ovat keskiarvoja kymmenestä mittauskerrasta.
+
+#### "Oikea" teksti
+
+##### Tiivistäminen
+
+Tiedoston koko | Huffman | LZW
+---------------|---------|----
+40 kt | 5129.62203 ms | 117.76088 ms
+100 kt | 45146.45394 ms | 197.90201 ms
+
+##### Purkaminen
+
+Tiedoston koko | Huffman | LZW
+---------------|---------|----
+40 kt | 2142.53678 ms | 131.48892 ms
+100 kt | 10584.6464 ms | 234.61973 ms
