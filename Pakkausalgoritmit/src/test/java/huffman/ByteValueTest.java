@@ -46,8 +46,8 @@ public class ByteValueTest {
         ByteValue bv2 = new ByteValue((byte) 2);
         byte b1 = bv1.getByteValue();
         byte b2 = bv2.getByteValue();
-        assertEquals(b1, 1);
-        assertEquals(b2, 2);
+        assertEquals(b1, (byte) 1);
+        assertEquals(b2, (byte) 2);
     }
     
 }

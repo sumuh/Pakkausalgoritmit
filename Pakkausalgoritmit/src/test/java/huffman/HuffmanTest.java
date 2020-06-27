@@ -44,7 +44,7 @@ public class HuffmanTest {
     @Before
     public void setUp() {
         input = new byte[]{6, 6, 2, 4, 3};
-        File inputFile = new File("huffmanfiles/toCompress.bin");
+        File inputFile = new File("huffmanfiles/toCompress.txt");
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(inputFile);
@@ -85,6 +85,7 @@ public class HuffmanTest {
             byte[] bytes3 = new byte[10];
             in.read(bytes3);
             int treeStringLength = ByteBuffer.wrap(bytes3).getInt();
+            System.out.println(treeStringLength);
             assertTrue("treeStringLength-muuttuja on oikein", treeStringLength == 39);
             
             int i;

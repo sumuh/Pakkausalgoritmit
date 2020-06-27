@@ -22,8 +22,13 @@ public class Tester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        File file = new File("bronte100.txt");
+        File file = new File("bronte40.txt");
+        System.out.println("Huffman: 40 kt");
         fileTest(file);
+        
+        File file2 = new File("bronte100.txt");
+        System.out.println("Huffman: 100 kt");
+        fileTest(file2);
     }
     
     // testaa olemassaolevan filen perusteella

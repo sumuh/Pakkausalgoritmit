@@ -173,10 +173,10 @@ public class Node implements Comparable<Node> {
             if (!this.isLeaf && o.isLeaf) {
                 return 1;
             }
-//            if (this.isLeaf && o.isLeaf) {
-//                int i = this.getByteValue() - o.getByteValue();
-//                return i;
-//            }
+            if (this.isLeaf && o.isLeaf) {
+                int i = this.getByteValue() - o.getByteValue();
+                return i;
+            }
         }
         return this.weight - o.weight;
     }
